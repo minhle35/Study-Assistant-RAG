@@ -134,7 +134,7 @@
 
         const apiService = {
             async chat(question, includeSources = true, maxSources = 3) {
-                const response = await fetch(`${API_BASE}/chat`, {
+                const response = await fetch(`${API_BASE}/api/v1/chat`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -147,14 +147,14 @@
             },
 
             async health() {
-                const response = await fetch(`${API_BASE}/health`);
+                const response = await fetch(`${API_BASE}/api/v1/health`);
                 return response.json();
             },
 
             async uploadDocument(file) {
                 const formData = new FormData();
                 formData.append('file', file);
-                const response = await fetch(`${API_BASE}/upload`, {
+                const response = await fetch(`${API_BASE}/api/v1/upload`, {
                     method: 'POST',
                     body: formData
                 });
