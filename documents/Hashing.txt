@@ -1,0 +1,40 @@
+Hashing
+Basic idea: use key value to compute page address of tuple.
+e.g. tuple with key = v  is stored in page i
+Requires: hash function h(v) that maps KeyDomain → [0..b-1].hashing converts key value (any type) into integer valueinteger value is then mapped to page indexnote: can view integer value as a bit-string
+
+❖ Hashing (cont)
+PostgreSQL hash function (simplified):
+Datum hash_any(unsigned char *k, register int keylen)
+{
+   register uint32 a, b, c, len;
+   /* Set up the internal state */
+   len = keylen;  a = b = c = 0x9e3779b9 + len + 3923095;
+   /* handle most of the key */
+   while (len >= 12) {
+      a += ka[0]; b += ka[1]; c += ka[2];
+      mix(a, b, c);
+      ka += 3;  len -= 12;
+   }
+   /* collect any data from last 11 bytes into a,b,c */
+   mix(a, b, c);
+   return UInt32GetDatum(c);
+}
+See backend/access/hash/hashfunc.c for details  (incl mix())
+❖ Hashing (cont)
+hash_any() gives hash value as 32-bit quantity (uint32).Two ways to map raw hash value into a page address:if b = 2k, bitwise AND with k low-order bits set to one
+uint32 hashToPageNum(uint32 hval) {
+    uint32 mask = 0xFFFFFFFF;
+    return (hval & (mask >> (32-k)));
+}
+otherwise, use mod  to produce value in range 0..b-1
+uint32 hashToPageNum(uint32 hval) {
+    return (hval % b);
+}
+
+❖ Hashing Performance
+Aims:distribute tuples evenly amongst bucketshave most buckets nearly full   (attempt to minimise wasted space)Note: if data distribution not uniform, address distribution can't be uniform.
+Best case: every bucket contains same number of tuples.
+Worst case: every tuple hashes to same bucket.
+Average case: some buckets have more tuples than others.Use overflow pages to handle "overfull" buckets  (cf. sorted files)
+All tuples in each bucket must have same hash value.

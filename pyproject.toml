@@ -1,0 +1,25 @@
+[project]
+name = "studybuddy-rag-assistant"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Thao Minh Le",email = "118033201+minhle35@users.noreply.github.com"}
+]
+readme = "README.md"
+requires-python = "^3.9"
+dependencies = [
+    "chromadb (>=1.0.12,<2.0.0)",
+    "uvicorn[standard] (>=0.34.3,<0.35.0)",
+    "langchain (>=0.3.25,<0.4.0)",
+    "sentence-transformers (>=4.1.0,<5.0.0)",
+    "pydantic (>=2.11.5,<3.0.0)",
+    "openai (>=1.84.0,<2.0.0)",
+    "langchain-community (>=0.3.24,<0.4.0)",
+    "python-multipart (>=0.0.20,<0.0.21)",
+    "langchain-openai (>=0.3.21,<0.4.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
